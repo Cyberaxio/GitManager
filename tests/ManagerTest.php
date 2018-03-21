@@ -14,11 +14,25 @@ class ManagerTest extends BaseTestCase
 	/**
 	 * @test
 	 */
+	public function it_can_init_repository()
+	{
+		$this->checkStorageDir();
+		$path = __DIR__ . '/../storage';
+		$this->assertFalse(file_exists($path . '/.git'));
+		$manager = Manager::init($path);
+		$this->assertTrue(file_exists($path . '/.git'));
+		$this->checkStorageDir();
+	}
+
+
+	/**
+	 * @test
+	 */
 	public function it_can_get_config()
 	{
-		$manager = Manager::new();
+		$repository = Manager::new();
 
-		$this->assertSame(22, $manager->config('port'));
+		$this->assertSame(22, $repository->config('port'));
 	}
 	/**
 	 * @test
@@ -26,12 +40,11 @@ class ManagerTest extends BaseTestCase
 	public function it_can_set_config()
 	{
 		$port = random_int(22, 1000);
-		$manager = Manager::new(['port' => $port]);
+		$repository = Manager::new(['port' => $port]);
+		$this->assertSame($port, $repository->config('port'));
 
-		$this->assertSame($port, $manager->config('port'));
-
-		$manager->setConfig('port', 20);
-		$this->assertSame(20, $manager->config('port'));
+		$repository->setConfig('port', 20);
+		$this->assertSame(20, $repository->config('port'));
 	}
 
 	/**
@@ -40,9 +53,24 @@ class ManagerTest extends BaseTestCase
 	public function it_reset_config()
 	{
 		$port = random_int(50, 1000);
-		$manager = Manager::new(['port' => $port]);
+		$repository = Manager::new(['port' => $port]);
 
-		$newManager = Manager::new();
-		$this->assertSame(22, $newManager->config('port'));
+		$newRepository = Manager::new();
+		$this->assertSame(22, $newRepository->config('port'));
+	}
+
+	private function checkStorageDir()
+	{
+		$dir = __DIR__ . '/../storage';
+		if(file_exists($dir)){
+			$it = new \RecursiveDirectoryIterator($dir, \FilesystemIterator::SKIP_DOTS);
+			$it = new \RecursiveIteratorIterator($it, \RecursiveIteratorIterator::CHILD_FIRST);
+			foreach($it as $file) {
+				if ($file->isDir()) rmdir($file->getPathname());
+				else unlink($file->getPathname());
+			}
+		}else{
+			mkdir($dir);
+		}
 	}
 }

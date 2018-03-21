@@ -18,12 +18,19 @@ $ composer require cyberaxio/gitmanager
 
 use Cyberaxio\GitManager\Manager;
 
-// create a new manager
-$manager = Manager::new();
+// create a new repository
+$repository = Manager::init($path);
+
+// retrieve an existing repository
+$repository = Manager::find($path);
+
+// create a new repository manager (Without actually init or cloning it)
+$repository = Manager::new();
 
 // You can optionally pass an array config to the new method to alter default configuration
-$manager = Manager::new(['port' => 12345]);
+$repository = Manager::new(['port' => 12345]);
 // Or use the following method
-$manager->setConfig('port', 12345);
+$repository->setConfig('port', 12345);
+
 ```
 

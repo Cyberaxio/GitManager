@@ -6,47 +6,26 @@ use Cyberaxio\GitManager\Commands\GitCommand;
 
 class Manager
 {
-	private $config = [
-		'port' => 22,
-		'debug' => false
-	];
-
-	private function __construct($config = [])
-	{
-		$this->setConfig($config);
+	private function __construct()
+	{		
 	}
 
 	public static function new($config = [])
 	{
-		return new Manager($config);
+		return self::find(null, $config);
 	}
 
-	public function config($key = null)
+	public static function find($path = null, $config = [])
 	{
-		if($key){
-			return $this->config[$key] ?? null;
-		}
-		return $this->config;
+		return new Repository($path, $config);
 	}
 
-	public function setConfig($key, $value = null)
+	public static function init($path = null)
 	{
-		if(is_array($key)){
-			$this->config = array_merge($this->config, $key);
-		}else{
-			$this->config[$key] = $value;
-		}
-		return $this;
-	}
+		(new GitCommand('git init'))
+		->setCwd(realpath($path))
+		->run();
 
-	public static function find($path = null)
-	{
-		return new Repository($path);
-	}
-
-	public function debug($status = true)
-	{
-		$this->setConfig('debug', $status);
-		return $this;
+		return self::find($path);
 	}
 }
