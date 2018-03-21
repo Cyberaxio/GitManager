@@ -43,21 +43,21 @@ class ManagerTest extends BaseTestCase
 	}
 
 
-	/**
-	 * @test
-	 */
-	public function it_can_clone_repository()
-	{
-		$this->checkStorageDir();
-		$path = __DIR__ . '/../storage';
-		$repository = Manager::init($path . '/test');
+	// /**
+	//  * @test
+	//  */
+	// public function it_can_clone_repository()
+	// {
+	// 	$this->checkStorageDir();
+	// 	$path = __DIR__ . '/../storage';
+	// 	$repository = Manager::init($path . '/test');
 
-		$this->assertFalse(file_exists($path . '/test2/.git'));
+	// 	$this->assertFalse(file_exists($path . '/test2/.git'));
 
-		Manager::clone('file://' . realpath($path. '/test'), $path . '/test2');
+	// 	Manager::clone('file://' . realpath($path. '/test'), $path . '/test2');
 
-		$this->assertTrue(file_exists($path . '/test2/.git'));
-	}
+	// 	$this->assertTrue(file_exists($path . '/test2/.git'));
+	// }
 
 	/**
 	 * @test
