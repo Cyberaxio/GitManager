@@ -1,0 +1,16 @@
+language: php
+php:
+  - 7.2
+
+cache:
+  directories:
+    - $HOME/.composer/cache
+
+before_script:
+  - travis_retry composer self-update
+  - travis_retry composer global require hirak/prestissimo
+  - travis_retry composer install --no-interaction --prefer-dist
+
+script:
+  - vendor/bin/phpunit --no-coverage
+
