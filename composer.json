@@ -1,0 +1,39 @@
+{
+    "name": "cyberaxio/gitwrapper",
+    "type": "library",
+    "description": "A simple PHP Git wrapper",
+    "keywords": [
+        "git",
+        "wrapper",
+        "repository"
+    ],
+    "homepage": "https://github.com/Cyberaxio/GitWrapper",
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "Matthieu Guerra",
+            "email": "dev.cyberaxio@gmail.com",
+            "homepage": "https://cyberax.io",
+            "role": "Developer"
+        }
+    ],
+    "require": {
+        "php": ">=7.1",
+        "symfony/process": "^4.0"
+    },
+    "require-dev": {
+        "phpunit/phpunit": "~7.0",
+        "mockery/mockery": "~1.0",
+        "codedungeon/phpunit-result-printer": "^0.6.1"
+    },
+    "autoload": {
+        "psr-4": {
+            "Cyberaxio\\GitWrapper\\": "src/"
+        }
+    },
+    "autoload-dev": {
+        "psr-4": {
+            "Cyberaxio\\GitWrapper\\Tests\\": "tests"
+        }
+    }
+}
