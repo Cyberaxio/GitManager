@@ -1,13 +1,13 @@
 {
-    "name": "cyberaxio/gitwrapper",
+    "name": "cyberaxio/gitmanager",
     "type": "library",
-    "description": "A simple PHP Git wrapper",
+    "description": "A simple PHP Git manager",
     "keywords": [
         "git",
-        "wrapper",
+        "manager",
         "repository"
     ],
-    "homepage": "https://github.com/Cyberaxio/GitWrapper",
+    "homepage": "https://github.com/Cyberaxio/GitManager",
     "license": "MIT",
     "authors": [
         {
@@ -28,12 +28,12 @@
     },
     "autoload": {
         "psr-4": {
-            "Cyberaxio\\GitWrapper\\": "src/"
+            "Cyberaxio\\GitManager\\": "src/"
         }
     },
     "autoload-dev": {
         "psr-4": {
-            "Cyberaxio\\GitWrapper\\Tests\\": "tests"
+            "Cyberaxio\\GitManager\\Tests\\": "tests"
         }
     }
 }

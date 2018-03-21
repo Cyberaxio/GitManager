@@ -1,8 +1,8 @@
 <?php
 
-namespace Cyberaxio\GitWrapper;
+namespace Cyberaxio\GitManager;
 
-use Cyberaxio\GitWrapper\Commands\GitCommand;
+use Cyberaxio\GitManager\Commands\GitCommand;
 
 class Manager
 {
@@ -36,6 +36,17 @@ class Manager
 		}else{
 			$this->config[$key] = $value;
 		}
+		return $this;
+	}
+
+	public static function find($path = null)
+	{
+		return new Repository($path);
+	}
+
+	public function debug($status = true)
+	{
+		$this->setConfig('debug', $status);
 		return $this;
 	}
 }

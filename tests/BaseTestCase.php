@@ -1,6 +1,6 @@
 <?php
 
-namespace Cyberaxio\GitWrapper\Tests;
+namespace Cyberaxio\GitManager\Tests;
 
 use PHPUnit\Framework\TestCase;
 

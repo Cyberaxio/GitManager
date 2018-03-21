@@ -1,8 +1,8 @@
 <?php
 
-namespace Cyberaxio\GitWrapper\Tests;
+namespace Cyberaxio\GitManager\Tests;
 
-use Cyberaxio\GitWrapper\Manager;
+use Cyberaxio\GitManager\Manager;
 
 class ManagerTest extends BaseTestCase
 {
