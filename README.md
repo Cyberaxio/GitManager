@@ -31,6 +31,60 @@ $repository = Manager::new();
 $repository = Manager::new(['port' => 12345]);
 // Or use the following method
 $repository->setConfig('port', 12345);
+```
+
+## Run command inside repository directory
+
+```php
+<?php
+
+// Get raw command output
+$rawOutput = $repository->rawCommand('ls');
+
+// You can also parse the output by passing a callback
+$parsedOutput = $repository->command('ls')->run()
+	->parseOutput(function($value){
+		if($value == condition){
+			return $value;
+		}
+		return false;
+	}));
+
+// You can enable debug mode for each command by chaining method debug before method call.
+// For example, for a branch command.
+$repository->getBranches()->debug()->all();
 
 ```
 
+## Clone repo
+```php
+<?php
+// You can clone a public repo by passing the url and the path where it should be cloned.
+$repository = Manager::clone($url, $path);
+
+// If it is a private repo, provide the ssh url and the path to the private key (Which should be readable by your webserver) and the port (default to 22)
+$repository = Manager::clone($url, $path, $pathToPrivateKey, $port);
+
+// You can also do theses steps separately
+// First, you need to get a repository instance.
+$repository = Manager::new();
+
+// Pass the path where the repo will be cloned
+$repository->setPath($url);
+
+// Pass the url, we will check if the repo is readable before cloning it
+$repository->setUrl($url);
+
+// Optionally the port if it's on a private server
+$repository->setPort($port);
+
+// Set the private key (or deploy key)
+$repository->setPrivateKey($pathToPrivateKey);
+
+// This method accept the port on second parameters for convenience
+$repository->setPrivateKey($pathToPrivateKey, $port);
+
+// Now clone it
+$repository->clone();
+
+```

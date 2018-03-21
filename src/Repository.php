@@ -2,9 +2,13 @@
 
 namespace Cyberaxio\GitManager;
 
+use Cyberaxio\GitManager\Commands\GitCommand;
+
 class Repository
 {
 	private $path;
+	private $url;
+	private $exists = false;
 	private $config = [
 		'port' => 22,
 		'debug' => false
@@ -12,14 +16,20 @@ class Repository
 
 	public function __construct($path = null, $config = [])
 	{
-		if ($path) {
-			$this->setPath($path);
-			$this->exists = true;
-		}
-
 		$this->setConfig($config);
 
+		if ($path) {
+			$this->setPath($path);
+			$this->exists();
+		}
+
+
 		return $this;
+	}
+
+	public function exists()
+	{
+		return $this->exists = file_exists($this->path . '/.git');
 	}
 
 	public function setPath($path): void
@@ -28,7 +38,7 @@ class Repository
 		$path = $this->formatPath($path);
 
 		// Try get realpath
-		if (false === ($this->path = realpath($path))) {
+		if (!$this->config('cloning') && false === ($this->path = realpath($path))) {
 			throw new GitManagerException("Repository '$path' not found.");
 		}
 	}
@@ -57,8 +67,20 @@ class Repository
 		if(is_array($key)){
 			$this->config = array_merge($this->config, $key);
 		}else{
-			$this->config[$key] = $value;
+			$this->config[$key] = $value =! null ? $value : $this->config[$key];
 		}
+		return $this;
+	}
+
+	public function getEnv(): array
+	{
+		return $this->env;
+	}
+
+	public function setEnv($key, $value)
+	{
+		$this->env[$key] = $value;
+
 		return $this;
 	}
 
@@ -66,5 +88,98 @@ class Repository
 	{
 		$this->setConfig('debug', $status);
 		return $this;
+	}
+
+	public function setUrl($url = null)
+	{
+		$this->url = $url;
+		return $this;
+	}
+
+	public function setPrivateKey($privateKey, $port = null, $wrapper = null): void
+	{
+		if (null === $wrapper) {
+			$wrapper = __DIR__ . '/bin/git-ssh-wrapper.sh';
+		}
+		if ( ! $wrapperPath = realpath($wrapper)) {
+			throw new GitManagerException('Path to GIT_SSH wrapper script could not be resolved: ' . $wrapper);
+		}
+		if ( ! $privateKeyPath = realpath($privateKey)) {
+			throw new GitManagerException('Path private key could not be resolved: ' . $privateKey);
+		}
+		$this->setEnv('GIT_SSH', $wrapperPath);
+		$this->setEnv('GIT_SSH_KEY', $privateKeyPath);
+		$this->setPort($port);
+		$this->setConfig('privateKey', $privateKey);
+	}
+
+	public function setPort($port = null)
+	{
+		$this->setConfig('port', $port);
+		$this->setEnv('GIT_SSH_PORT', $this->config('port'));
+		return $this;
+	}
+
+	public function clone($path = null, $bare = false)
+	{
+		if ($path) {
+			$this->path = $this->formatPath($path);
+		}
+		$this->checkRepo();
+		if ( ! $this->path) {
+			throw new GitManagerException('No path specified');
+		}
+		$this->command('git clone', ($bare ? '--bare' : null), $this->url, $this->path)
+			->setEnv($this->getEnv())
+			->run();
+
+		$this->exists();
+
+		return $this;
+	}
+
+	private function checkRepo(): void
+	{
+		if ('ssh' === $this->checkUrlType() && ! $this->config('privateKey')) {
+			throw new GitManagerException('Private key not defined');
+		}
+		if ( ! $this->isReadable($this->url)) {
+			throw new GitManagerException("Repository $this->url is not readable.");
+		}
+	}
+
+	public function checkUrlType()
+	{
+		return parse_url($this->url, PHP_URL_SCHEME) ?? 'ssh';
+	}
+
+	private function isReadable($url)
+	{
+		$oldDebug = $this->config('debug');
+		$this->debug(false);
+
+		$isReadable = 0 === $this->command(
+			'GIT_TERMINAL_PROMPT=0 git ls-remote',
+			'--heads',
+			'--quiet',
+			'--exit-code',
+			$url
+		)->setEnv($this->getEnv())
+			->run()->getExitCode();
+
+		$this->debug($oldDebug);
+
+		return $isReadable;
+	}
+
+	public function command(...$command)
+	{
+		return (new GitCommand(...$command))->debug($this->config('debug'));
+	}
+
+
+	public function rawCommand(...$command)
+	{
+		return $this->command(...$command)->getOutput();
 	}
 }

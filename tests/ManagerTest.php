@@ -19,11 +19,45 @@ class ManagerTest extends BaseTestCase
 		$this->checkStorageDir();
 		$path = __DIR__ . '/../storage';
 		$this->assertFalse(file_exists($path . '/.git'));
-		$manager = Manager::init($path);
+		$repository = Manager::init($path);
 		$this->assertTrue(file_exists($path . '/.git'));
 		$this->checkStorageDir();
 	}
 
+	/**
+	 * @test
+	 */
+	public function it_can_find_repository()
+	{
+		$this->checkStorageDir();
+		$path = __DIR__ . '/../storage';
+		$this->assertFalse(file_exists($path . '/.git'));
+		$repository = Manager::init($path)->getPath();
+
+		$this->assertTrue(file_exists($path . '/.git'));
+
+		$repository2 = Manager::find($path)->getPath();
+
+		$this->assertSame($repository, $repository2);
+		$this->checkStorageDir();
+	}
+
+
+	/**
+	 * @test
+	 */
+	public function it_can_clone_repository()
+	{
+		$this->checkStorageDir();
+		$path = __DIR__ . '/../storage';
+		$repository = Manager::init($path . '/test');
+
+		$this->assertFalse(file_exists($path . '/test2/.git'));
+
+		Manager::clone('file://' . realpath($path. '/test'), $path . '/test2');
+
+		$this->assertTrue(file_exists($path . '/test2/.git'));
+	}
 
 	/**
 	 * @test
