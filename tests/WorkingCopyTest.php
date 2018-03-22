@@ -5,7 +5,7 @@ namespace Cyberaxio\GitManager\Tests;
 use Cyberaxio\GitManager\Manager;
 use Cyberaxio\GitManager\GitManagerException;
 
-class WorkingDirectoryTest extends BaseTestCase
+class WorkingCopyTest extends BaseTestCase
 {
 	public function setUp()
 	{
@@ -22,11 +22,11 @@ class WorkingDirectoryTest extends BaseTestCase
 	 */
 	public function it_can_check_if_repository_is_dirty()
 	{
-		$this->assertFalse($this->repository->workingDirectory()->isDirty());
-		$this->assertTrue($this->repository->workingDirectory()->isClean());
+		$this->assertFalse($this->repository->workingCopy()->isDirty());
+		$this->assertTrue($this->repository->workingCopy()->isClean());
 		touch($this->repository->getPath() . '/new.file');
-		$this->assertTrue($this->repository->workingDirectory()->isDirty());
-		$this->assertFalse($this->repository->workingDirectory()->isClean());
+		$this->assertTrue($this->repository->workingCopy()->isDirty());
+		$this->assertFalse($this->repository->workingCopy()->isClean());
 	}
 
 	/**
@@ -36,7 +36,7 @@ class WorkingDirectoryTest extends BaseTestCase
 	{
 		touch($this->repository->getPath() . '/new.file');
 		$this->assertSame(['?? new.file'], $this->repository->command('git status --porcelain')->run()->getOutput('stdout'));
-		$this->repository->workingDirectory()->add('new.file');
+		$this->repository->workingCopy()->add('new.file');
 		$this->assertSame(['A  new.file'], $this->repository->command('git status --porcelain')->run()->getOutput('stdout'));
 	}
 
@@ -48,7 +48,7 @@ class WorkingDirectoryTest extends BaseTestCase
 		touch($this->repository->getPath() . '/new.file');
 		touch($this->repository->getPath() . '/new.second.file');
 		$this->assertSame(['?? new.file', '?? new.second.file'], $this->repository->command('git status --porcelain')->run()->getOutput('stdout'));
-		$this->repository->workingDirectory()->addAll();
+		$this->repository->workingCopy()->addAll();
 		$this->assertSame(['A  new.file', 'A  new.second.file'], $this->repository->command('git status --porcelain')->run()->getOutput('stdout'));
 	}
 
@@ -57,12 +57,12 @@ class WorkingDirectoryTest extends BaseTestCase
 	 */
 	public function it_can_commit_files()
 	{
-		$this->assertTrue($this->repository->workingDirectory()->isClean());
+		$this->assertTrue($this->repository->workingCopy()->isClean());
 		touch($this->repository->getPath() . '/new.file');
-		$this->assertTrue($this->repository->workingDirectory()->isDirty());
-		$this->repository->workingDirectory()->add('new.file');
-		$this->repository->workingDirectory()->commit('First Commit : Add new.file');
-		$this->assertTrue($this->repository->workingDirectory()->isClean());
+		$this->assertTrue($this->repository->workingCopy()->isDirty());
+		$this->repository->workingCopy()->add('new.file');
+		$this->repository->workingCopy()->commit('First Commit : Add new.file');
+		$this->assertTrue($this->repository->workingCopy()->isClean());
 		$this->assertSame(['First Commit : Add new.file'], $this->repository->command('git log -1 --pretty=%B | cat')->run()->getOutput());
 	}
 
@@ -75,8 +75,8 @@ class WorkingDirectoryTest extends BaseTestCase
 		touch($path . '/new.file');
 		$this->assertFalse(file_exists($path . '/renamed.file'));
 		$this->assertSame(['?? new.file'], $this->repository->command('git status --porcelain')->run()->getOutput('stdout'));
-		$this->repository->workingDirectory()->add('new.file');
-		$this->repository->workingDirectory()->rename('new.file', 'renamed.file');
+		$this->repository->workingCopy()->add('new.file');
+		$this->repository->workingCopy()->rename('new.file', 'renamed.file');
 		$this->assertSame(['A  renamed.file'], $this->repository->command('git status --porcelain')->run()->getOutput('stdout'));
 		$this->assertTrue(file_exists($path . '/renamed.file'));
 	}
@@ -90,8 +90,8 @@ class WorkingDirectoryTest extends BaseTestCase
 		touch($path . '/new.file');
 		$this->assertFalse(file_exists($path . '/renamed.file'));
 		$this->assertSame(['?? new.file'], $this->repository->command('git status --porcelain')->run()->getOutput('stdout'));
-		$this->repository->workingDirectory()->add('new.file');
-		$this->repository->workingDirectory()->rename(['new.file' => 'renamed.file']);
+		$this->repository->workingCopy()->add('new.file');
+		$this->repository->workingCopy()->rename(['new.file' => 'renamed.file']);
 		$this->assertSame(['A  renamed.file'], $this->repository->command('git status --porcelain')->run()->getOutput('stdout'));
 		$this->assertTrue(file_exists($path . '/renamed.file'));
 	}
@@ -104,10 +104,10 @@ class WorkingDirectoryTest extends BaseTestCase
 		touch($this->repository->getPath() . '/new.file');
 		$this->assertSame(['?? new.file'], $this->repository->command('git status --porcelain')->run()->getOutput('stdout'));
 		
-		$this->repository->workingDirectory()->add('new.file');
+		$this->repository->workingCopy()->add('new.file');
 		$this->assertSame(['A  new.file'], $this->repository->command('git status --porcelain')->run()->getOutput('stdout'));
 		
-		$process = $this->repository->workingDirectory()->remove('new.file', true);
+		$process = $this->repository->workingCopy()->remove('new.file', true);
 		$this->assertSame(['?? new.file'], $this->repository->command('git status --porcelain')->run()->getOutput());
 	}
 
@@ -118,9 +118,9 @@ class WorkingDirectoryTest extends BaseTestCase
 	{
 		touch($this->repository->getPath() . '/new.file');
 		$this->assertSame(['?? new.file'], $this->repository->command('git status --porcelain')->run()->getOutput('stdout'));
-		$this->repository->workingDirectory()->add('new.file');
+		$this->repository->workingCopy()->add('new.file');
 		$this->assertSame(['A  new.file'], $this->repository->command('git status --porcelain')->run()->getOutput('stdout'));
-		$this->repository->workingDirectory()->remove('new.file', false);
+		$this->repository->workingCopy()->remove('new.file', false);
 		$this->assertSame([], $this->repository->command('git status --porcelain')->run()->getOutput('stdout'));
 		$this->assertFalse(file_exists($this->repository->getPath() . '/new.file'));
 	}

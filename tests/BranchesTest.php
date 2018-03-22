@@ -14,10 +14,10 @@ class BranchesTest extends BaseTestCase
 		$this->checkStorageDir();
 		$this->repository = Manager::init($path);
 		touch($path . '/new.file');
-		$this->repository->workingDirectory()->add($path . '/new.file');
+		$this->repository->workingCopy()->add($path . '/new.file');
 		$this->repository->gitConfig('user.name', 'Test Name');
 		$this->repository->gitConfig('user.email', 'test@example.com');
-		$this->repository->workingDirectory()->commit('Add new.file');
+		$this->repository->workingCopy()->commit('Add new.file');
 	}
 
 	/**
@@ -189,8 +189,8 @@ class BranchesTest extends BaseTestCase
 		
 		touch($this->repository->getPath() . '/new.file.in.newbranch');
 		
-		$this->repository->workingDirectory()->add('new.file.in.newbranch');
-		$this->repository->workingDirectory()->commit('Add new.file.in.newbranch');
+		$this->repository->workingCopy()->add('new.file.in.newbranch');
+		$this->repository->workingCopy()->commit('Add new.file.in.newbranch');
 		$this->assertTrue(file_exists($this->repository->getPath() . '/new.file.in.newbranch'));
 
 		$this->repository->branches()->checkout('master');

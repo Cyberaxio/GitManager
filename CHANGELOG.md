@@ -12,4 +12,4 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 - Add init method
 - Add clone method
 - Add branches commands
-- Add working directory commands
+- Add working copy commands

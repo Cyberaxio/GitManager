@@ -2,7 +2,7 @@
 
 namespace Cyberaxio\GitManager\Commands;
 
-class WorkingDirectoryCommands
+class WorkingCopyCommands
 {
 	use CommandTrait;
 

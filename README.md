@@ -180,16 +180,16 @@ $branches->create($name)->checkout('master')->merge($name)->remove($name);
 ```
 
 
-## Working Directory commands
+## Working Copy commands
 ```php
 <?php
 
-// You can access Working Directory commands like this
-$repository->workingDirectory()->method();
+// You can access Working Copy commands like this
+$repository->workingCopy()->method();
 
-// Or save Working Directory command into variable
-$workingDirectory = $repository->workingDirectory();
-$workingDirectory->method();
+// Or save Working Copy command into variable
+$workingCopy = $repository->workingCopy();
+$workingCopy->method();
 ```
 
 * Check if working directory is clean/dirty
@@ -197,38 +197,38 @@ $workingDirectory->method();
 ```php
  <?php
 // Theses methods return boolean
-$workingDirectory->isDirty(); // true
+$workingCopy->isDirty(); // true
 // Or
-$workingDirectory->isClean(); // false
+$workingCopy->isClean(); // false
 ```
 
 ### Fluent methods (can be chained)
 * Add files to index
 ```php
  <?php
-$workingDirectory->add($file);
+$workingCopy->add($file);
 // To add all file in staging
-$workingDirectory->addAll();
+$workingCopy->addAll();
 ```
 
 * Remove file from index
 ```php
  <?php
 // This will remove file from index only, and keep file on the system
-$workingDirectory->remove($file);
+$workingCopy->remove($file);
 // If you wish to delete the file on the system, set the second parameter to false
-$workingDirectory->remove($file, false);
+$workingCopy->remove($file, false);
 ```
 
 * Rename file into index
 ```php
  <?php
-$workingDirectory->rename($file, $to);
+$workingCopy->rename($file, $to);
 ```
 
 * Make a commit
 ```php
  <?php
 // To commit all staged files
-$workingDirectory->commit($message, $options);
+$workingCopy->commit($message, $options);
 ```
