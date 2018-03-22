@@ -9,6 +9,7 @@ class ManagerTest extends BaseTestCase
 	public function setUp()
 	{
 		parent::setUp();
+		$this->checkStorageDir();
 	}
 
 	/**
@@ -16,12 +17,10 @@ class ManagerTest extends BaseTestCase
 	 */
 	public function it_can_init_repository()
 	{
-		$this->checkStorageDir();
 		$path = __DIR__ . '/../storage';
 		$this->assertFalse(file_exists($path . '/.git'));
 		$repository = Manager::init($path);
 		$this->assertTrue(file_exists($path . '/.git'));
-		$this->checkStorageDir();
 	}
 
 	/**
@@ -29,7 +28,6 @@ class ManagerTest extends BaseTestCase
 	 */
 	public function it_can_find_repository()
 	{
-		$this->checkStorageDir();
 		$path = __DIR__ . '/../storage';
 		$this->assertFalse(file_exists($path . '/.git'));
 		$repository = Manager::init($path)->getPath();
@@ -39,25 +37,20 @@ class ManagerTest extends BaseTestCase
 		$repository2 = Manager::find($path)->getPath();
 
 		$this->assertSame($repository, $repository2);
-		$this->checkStorageDir();
 	}
 
 
-	// /**
-	//  * @test
-	//  */
-	// public function it_can_clone_repository()
-	// {
-	// 	$this->checkStorageDir();
-	// 	$path = __DIR__ . '/../storage';
-	// 	$repository = Manager::init($path . '/test');
-
-	// 	$this->assertFalse(file_exists($path . '/test2/.git'));
-
-	// 	Manager::clone('file://' . realpath($path. '/test'), $path . '/test2');
-
-	// 	$this->assertTrue(file_exists($path . '/test2/.git'));
-	// }
+	/**
+	 * @test
+	 */
+	public function it_can_clone_repository()
+	{
+		$path = __DIR__ . '/../storage';
+		$url = "https://github.com/Cyberaxio/GitManager.git";
+		$this->assertFalse(file_exists($path . '/test/.git'));
+		$repository = Manager::clone($url, $path . '/test');
+		$this->assertTrue(file_exists($path . '/test/.git'));
+	}
 
 	/**
 	 * @test

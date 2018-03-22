@@ -21,11 +21,12 @@ class Manager
 
 	public static function init($path = null)
 	{
-		if(!realpath($path)){
+		if(! file_exists($path)){
 			mkdir($path, 0777, true);
 		}
+		$path = realpath($path);
 		(new GitCommand('git init'))
-		->setCwd(realpath($path))
+		->setCwd($path)
 		->run();
 
 		return self::find($path);
