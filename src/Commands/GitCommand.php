@@ -28,10 +28,10 @@ class GitCommand
 		}
 		$this->process->run();
 		$this->outputs = [
-			'standard' => $this->process->getOutput(),
-			'error' => $this->process->getErrorOutput(),
+			'stdout' => $this->process->getOutput(),
+			'stderr' => $this->process->getErrorOutput(),
 		];
-		$this->outputs['both'] = $this->outputs['standard'] . $this->outputs['error'];
+		$this->outputs['both'] = $this->outputs['stdout'] . $this->outputs['stderr'];
 		if ($this->debug) {
 			var_dump($this);
 			die();

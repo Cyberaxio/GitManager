@@ -178,3 +178,57 @@ $branches->create($name)->checkout('master')->merge($name)->remove($name);
 // -> Create FeatureTwo branch, checkout on master, merge FeatureTwo into master and remove FeatureTwo
 
 ```
+
+
+## Working Directory commands
+```php
+<?php
+
+// You can access Working Directory commands like this
+$repository->workingDirectory()->method();
+
+// Or save Working Directory command into variable
+$workingDirectory = $repository->workingDirectory();
+$workingDirectory->method();
+```
+
+* Check if working directory is clean/dirty
+
+```php
+ <?php
+// Theses methods return boolean
+$workingDirectory->isDirty(); // true
+// Or
+$workingDirectory->isClean(); // false
+```
+
+### Fluent methods (can be chained)
+* Add files to index
+```php
+ <?php
+$workingDirectory->add($file);
+// To add all file in staging
+$workingDirectory->addAll();
+```
+
+* Remove file from index
+```php
+ <?php
+// This will remove file from index only, and keep file on the system
+$workingDirectory->remove($file);
+// If you wish to delete the file on the system, set the second parameter to false
+$workingDirectory->remove($file, false);
+```
+
+* Rename file into index
+```php
+ <?php
+$workingDirectory->rename($file, $to);
+```
+
+* Make a commit
+```php
+ <?php
+// To commit all staged files
+$workingDirectory->commit($message, $options);
+```

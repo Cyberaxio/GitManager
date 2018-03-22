@@ -6,14 +6,14 @@ class WorkingDirectoryCommands
 {
 	use CommandTrait;
 
-	public function remove($file)
+	public function remove($file, $keep = true)
 	{
 		if ( ! is_array($file)) {
-			$file = func_get_args();
+			$file = [$file];
 		}
 
 		foreach ($file as $item) {
-			$this->command('git rm', $item, '-r')
+			$this->command('git rm ' . $item . ($keep == true ? ' --cached ' : null) . ' -rf')
 			->run();
 		}
 
