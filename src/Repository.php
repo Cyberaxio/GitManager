@@ -7,11 +7,14 @@ use Cyberaxio\GitManager\Commands\BranchCommands;
 use Cyberaxio\GitManager\Commands\WorkingCopyCommands;
 use Cyberaxio\GitManager\Commands\RemoteCommands;
 use Cyberaxio\GitManager\Commands\TagCommands;
+use Cyberaxio\GitManager\Commands\CommitCommands;
 
 class Repository
 {
 	private $path;
+	private $name;
 	private $url;
+	private $env = [];
 	private $exists = false;
 	private $config = [
 		'port' => 22,
@@ -33,7 +36,7 @@ class Repository
 
 	public function exists()
 	{
-		return $this->exists = file_exists($this->path . '/.git');
+		return $this->exists = file_exists($this->getPath() . '/.git');
 	}
 
 	public function setPath($path): void
@@ -55,6 +58,11 @@ class Repository
 	public function getPath()
 	{
 		return $this->path;
+	}
+
+	public function getFullPath()
+	{
+		return $this->getPath() . ($this->getName() ? '/' . $this->getName() : null );
 	}
 
 
@@ -100,6 +108,22 @@ class Repository
 		return $this;
 	}
 
+	public function getUrl()
+	{
+		return $this->url;
+	}
+
+	public function setName($name)
+	{
+		$this->name = $name;
+		return $this;
+	}
+
+	public function getName()
+	{
+		return $this->name;
+	}
+
 	public function setPrivateKey($privateKey, $port = null, $wrapper = null): void
 	{
 		if (null === $wrapper) {
@@ -124,31 +148,85 @@ class Repository
 		return $this;
 	}
 
-	public function clone($path = null, $bare = false)
+	public function clone($path = null, $name = null, $bare = false)
 	{
 		if ($path) {
-			$this->path = $this->formatPath($path);
+			$path = $this->formatPath($path);
+			if(! file_exists($path)){
+				mkdir($path, 0777, true);
+			}
+			$this->path = realpath($path);
 		}
+		if (! $this->getUrl()) {
+			throw new GitManagerException('No url specified');
+		}
+		$this->setName($name ?? $this->getRepoName($this->getUrl()));
 		$this->checkRepo();
+
+		if ( glob($this->getFullPath() . '/*')) {
+			throw new GitManagerException("Target directory is not empty at path " . $this->getFullPath());
+		}
 		if ( ! $this->path) {
 			throw new GitManagerException('No path specified');
 		}
-		$this->command('git clone', ($bare ? '--bare' : null), $this->url, $this->path)
+		$this->command('git clone', ($bare ? '--bare' : null), $this->url, $name)
 			->setEnv($this->getEnv())
 			->run();
 
+		$this->path = $this->getFullPath();
 		$this->exists();
+		$this->setName(null);
 
 		return $this;
 	}
 
+	public function getRepoName($url)
+	{
+		$scheme = parse_url($url, PHP_URL_SCHEME);
+		if (null === $scheme) {
+			$parts = explode('/', $url);
+			$path = end($parts);
+		} else {
+			$strpos = strpos($url, ':');
+			$path = substr($url, $strpos + 1);
+		}
+
+		return basename($path, '.git');
+	}
+	public function pull($remote = null, array $params = [])
+	{
+		$this->checkRepo();
+
+		return $this->command('git pull', $remote, $params)
+					->setEnv($this->getEnv())->run();
+	}
+
+	public function push($remote = null, array $params = [])
+	{
+		$this->checkRepo();
+
+		return $this->command('git push', $remote, $params)
+					->setEnv($this->getEnv())->run();
+	}
+
+	public function fetch($remote = null, array $params = [])
+	{
+		$this->checkRepo();
+
+		return $this->command('git fetch', $remote, $params)
+					->setEnv($this->getEnv())->run();
+	}
+
 	private function checkRepo(): void
 	{
-		if ('ssh' === $this->checkUrlType() && ! $this->config('privateKey')) {
-			throw new GitManagerException('Private key not defined');
+		if ( ! $this->getUrl() ) {
+			$this->setUrl($this->remotes()->getUrl('origin'));
 		}
 		if ( ! $this->isReadable($this->url)) {
 			throw new GitManagerException("Repository $this->url is not readable.");
+		}
+		if ('ssh' === $this->checkUrlType() && ! $this->config('privateKey')) {
+			throw new GitManagerException('Private key not defined');
 		}
 	}
 
@@ -159,21 +237,7 @@ class Repository
 
 	private function isReadable($url)
 	{
-		$oldDebug = $this->config('debug');
-		$this->debug(false);
-
-		$isReadable = 0 === $this->command(
-			'GIT_TERMINAL_PROMPT=0 git ls-remote',
-			'--heads',
-			'--quiet',
-			'--exit-code',
-			$url
-		)->setEnv($this->getEnv())
-			->run()->getExitCode();
-
-		$this->debug($oldDebug);
-
-		return $isReadable;
+		return $this->remotes()->isReadable($url);
 	}
 
 	public function command(...$command)
@@ -205,6 +269,11 @@ class Repository
 	public function tags()
 	{
 		return new TagCommands($this);
+	}
+
+	public function commits()
+	{
+		return new CommitCommands($this);
 	}
 
 	public function gitConfig($key, $value, $global = null)
