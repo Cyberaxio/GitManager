@@ -43,16 +43,16 @@ $rawOutput = $repository->rawCommand('ls');
 
 // You can also parse the output by passing a callback
 $parsedOutput = $repository->command('ls')->run()
-	->parseOutput(function($value){
-		if($value == condition){
-			return $value;
-		}
-		return false;
-	}));
+    ->parseOutput(function($value){
+        if($value == condition){
+            return $value;
+        }
+        return false;
+    }));
 
 // You can enable debug mode for each command by chaining method debug before method call.
 // For example, for a branch command.
-$repository->getBranches()->debug()->all();
+$repository->branches()->debug()->all();
 
 ```
 
@@ -236,72 +236,72 @@ $workingCopy->commit($message, $options);
 ## Remotes commands
 ```php
 <?php
-	// You can access remotes commands like this
-	$repository->getRemotes()->method();
-	
-	// Or save remotes command into variable
-	$remotes = $repository->getRemotes();
-	$remotes->method();
+// You can access remotes commands like this
+$repository->remotes()->method();
+
+// Or save remotes command into variable
+$remotes = $repository->remotes();
+$remotes->method();
 ```
 
 * Get remotes infos
 
 ```php
- <?php	
-	// Return array
-	// Get all remotes
-	$repository->getRemotes()->all();
-	
-	// Check if remote exists (return boolean)
-	$remotes->exists('origin'); // true
-	
+ <?php
+// Return array
+// Get all remotes
+$repository->remotes()->all();
+
+// Check if remote exists (return boolean)
+$remotes->exists('origin'); // true
+
 ```
-	
+
 ### Fluent methods (can be chained)
 * Add remote
 
 ```php
- <?php	
-	// Add a remote 
-	$remotes->add("upstream", $url, $options);
-	// or
-	$remotes->create("upstream", $url, $options);
+ <?php
+// Add a remote 
+$remotes->add("upstream", $url, $options);
+// or
+$remotes->create("upstream", $url, $options);
 ```
 
 * Remove remote
 
 ```php
- <?php	
-	// Remove a remote 
-	$remotes->remove($name);
-	// or
-	$remotes->delete($name);
+ <?php
+// Remove a remote 
+$remotes->remove($name);
+// or
+$remotes->delete($name);
 ```
 
 * Rename remote
 
 ```php
- <?php	
+ <?php
 
-	$remotes->rename($oldName, $newName);
+$remotes->rename($oldName, $newName);
 ```
 
 * Set/Get remote url
 
 ```php
  <?php
- 	// Set remote url
-	$remotes->setUrl($name, $url, $options);
+ // Set remote url
+$remotes->setUrl($name, $url, $options);
 
-	// Get remote url
-	$remotes->getUrl($name);
-		
+// Get remote url
+$remotes->getUrl($name);
+
 ```
 
 * Check if remote is readable
 
 ```php
  <?php
-	// Check if a remote is readable
-	$remotes->isReadable($url);
+// Check if a remote is readable
+$remotes->isReadable($url);
 ```
