@@ -6,6 +6,7 @@ use Cyberaxio\GitManager\Commands\GitCommand;
 use Cyberaxio\GitManager\Commands\BranchCommands;
 use Cyberaxio\GitManager\Commands\WorkingCopyCommands;
 use Cyberaxio\GitManager\Commands\RemoteCommands;
+use Cyberaxio\GitManager\Commands\TagCommands;
 
 class Repository
 {
@@ -199,6 +200,11 @@ class Repository
 	public function remotes()
 	{
 		return new RemoteCommands($this);
+	}
+
+	public function tags()
+	{
+		return new TagCommands($this);
 	}
 
 	public function gitConfig($key, $value, $global = null)

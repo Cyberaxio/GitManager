@@ -305,3 +305,64 @@ $remotes->getUrl($name);
 // Check if a remote is readable
 $remotes->isReadable($url);
 ```
+
+## Tags commands
+```php
+<?php
+// You can access tags commands like this
+$repository->getTags()->method();
+
+// Or save tags command into variable
+$tags = $repository->getTags();
+$tags->method();
+```
+
+* Get tags infos
+
+```php
+ <?php
+// Return arrays
+// Get all tags
+$tags->all();
+
+// Return boolean
+// Check if tag exists
+$tags->exists('v1.0.rc01'); // false
+// Or
+$tags->has('v1.0.rc01'); // false
+```
+
+### Fluent methods (can be chained)
+* Create tag
+
+```php
+ <?php
+// create a tag for active branch with name v2.0
+$tags->create('v2.0');
+// or
+$tags->add('v2.0');
+```
+
+* Remove tags
+
+```php
+ <?php
+// To remove a tag
+$tags->remove($name);
+// or
+$tags->delete($name);
+```
+
+* Create an alias/Rename tag
+
+```php
+ <?php
+// To create an alias from tag
+$tags->alias($current, $new);
+
+// To rename a tag (make alias and delete)
+$tags->rename($oldName, $newName);
+// Equivalent to 
+$tags->alias($oldName, $newName)->remove($oldName);
+
+```
