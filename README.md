@@ -310,10 +310,10 @@ $remotes->isReadable($url);
 ```php
 <?php
 // You can access tags commands like this
-$repository->getTags()->method();
+$repository->tags()->method();
 
 // Or save tags command into variable
-$tags = $repository->getTags();
+$tags = $repository->tags();
 $tags->method();
 ```
 
