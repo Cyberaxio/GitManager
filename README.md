@@ -70,7 +70,7 @@ $repository = Manager::clone($url, $path, $pathToPrivateKey, $port);
 $repository = Manager::new();
 
 // Pass the path where the repo will be cloned
-$repository->setPath($url);
+$repository->setPath($path);
 
 // Pass the url, we will check if the repo is readable before cloning it
 $repository->setUrl($url);
@@ -86,6 +86,26 @@ $repository->setPrivateKey($pathToPrivateKey, $port);
 
 // Now clone it
 $repository->clone();
+```
+
+## Fetch/Pull/Push repo
+```php
+<?php
+
+$repository = Manager::find($repoPath);
+// You can fetch a repo
+$repository->fetch();
+
+// You can pull the active branch
+$repository->pull();
+// Or specific branch and options
+$repository->pull($branch, $options);
+
+// You can push the repo
+$repository->push();
+// Or specific branch and options
+$repository->push($branch, $options);
+
 ```
 
 ## Interact with branches
