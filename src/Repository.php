@@ -5,6 +5,7 @@ namespace Cyberaxio\GitManager;
 use Cyberaxio\GitManager\Commands\GitCommand;
 use Cyberaxio\GitManager\Commands\BranchCommands;
 use Cyberaxio\GitManager\Commands\WorkingCopyCommands;
+use Cyberaxio\GitManager\Commands\RemoteCommands;
 
 class Repository
 {
@@ -193,6 +194,11 @@ class Repository
 	public function workingCopy()
 	{
 		return new WorkingCopyCommands($this);
+	}
+
+	public function remotes()
+	{
+		return new RemoteCommands($this);
 	}
 
 	public function gitConfig($key, $value, $global = null)

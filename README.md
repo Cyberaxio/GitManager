@@ -232,3 +232,76 @@ $workingCopy->rename($file, $to);
 // To commit all staged files
 $workingCopy->commit($message, $options);
 ```
+
+## Remotes commands
+```php
+<?php
+	// You can access remotes commands like this
+	$repository->getRemotes()->method();
+	
+	// Or save remotes command into variable
+	$remotes = $repository->getRemotes();
+	$remotes->method();
+```
+
+* Get remotes infos
+
+```php
+ <?php	
+	// Return array
+	// Get all remotes
+	$repository->getRemotes()->all();
+	
+	// Check if remote exists (return boolean)
+	$remotes->exists('origin'); // true
+	
+```
+	
+### Fluent methods (can be chained)
+* Add remote
+
+```php
+ <?php	
+	// Add a remote 
+	$remotes->add("upstream", $url, $options);
+	// or
+	$remotes->create("upstream", $url, $options);
+```
+
+* Remove remote
+
+```php
+ <?php	
+	// Remove a remote 
+	$remotes->remove($name);
+	// or
+	$remotes->delete($name);
+```
+
+* Rename remote
+
+```php
+ <?php	
+
+	$remotes->rename($oldName, $newName);
+```
+
+* Set/Get remote url
+
+```php
+ <?php
+ 	// Set remote url
+	$remotes->setUrl($name, $url, $options);
+
+	// Get remote url
+	$remotes->getUrl($name);
+		
+```
+
+* Check if remote is readable
+
+```php
+ <?php
+	// Check if a remote is readable
+	$remotes->isReadable($url);
+```
