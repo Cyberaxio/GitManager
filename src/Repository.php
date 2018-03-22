@@ -221,11 +221,11 @@ class Repository
 		if ( ! $this->getUrl() ) {
 			$this->setUrl($this->remotes()->getUrl('origin'));
 		}
-		if ( ! $this->isReadable($this->url)) {
-			throw new GitManagerException("Repository $this->url is not readable.");
-		}
 		if ('ssh' === $this->checkUrlType() && ! $this->config('privateKey')) {
 			throw new GitManagerException('Private key not defined');
+		}
+		if ( ! $this->isReadable($this->url)) {
+			throw new GitManagerException("Repository $this->url is not readable.");
 		}
 	}
 
