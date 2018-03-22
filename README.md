@@ -60,10 +60,16 @@ $repository->branches()->debug()->all();
 ```php
 <?php
 // You can clone a public repo by passing the url and the path where it should be cloned.
-$repository = Manager::clone($url, $path);
+$repository = Manager::clone($url, $path, $name = null);
+// This will clone the repository into $path, within a folder with same name as repository
+// The name parameter could be set to clone repository into another name than repo name
+$repository = Manager::clone($url, $path, $name = ".");
+// This will clone repository into $path which should be empty
+$repository = Manager::clone($url, $path, $name = "AnotherName");
+// This will clone repository into $path/AnotherName
 
 // If it is a private repo, provide the ssh url and the path to the private key (Which should be readable by your webserver) and the port (default to 22)
-$repository = Manager::clone($url, $path, $pathToPrivateKey, $port);
+$repository = Manager::clone($url, $path, $name, $pathToPrivateKey, $port);
 
 // You can also do theses steps separately
 // First, you need to get a repository instance.

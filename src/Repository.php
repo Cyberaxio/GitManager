@@ -162,7 +162,6 @@ class Repository
 		}
 		$this->setName($name ?? $this->getRepoName($this->getUrl()));
 		$this->checkRepo();
-
 		if ( glob($this->getFullPath() . '/*')) {
 			throw new GitManagerException("Target directory is not empty at path " . $this->getFullPath());
 		}

@@ -32,16 +32,13 @@ class Manager
 		return self::find($path);
 	}
 
-	public static function clone($url, $path, $privateKey = null, $port = 22)
+	public static function clone($url, $path, $name = null, $privateKey = null, $port = 22)
 	{
 		$repository = self::find($path, ['cloning' => true]);
-		if ($repository->exists()) {
-			return $repository;
-		}
 		$repository->setUrl($url);
 		$repository->setPort($port);
 		$repository->setPrivateKey($privateKey);
-		$repository->clone($path);
+		$repository->clone($path, $name);
 
 		return $repository;
 	}

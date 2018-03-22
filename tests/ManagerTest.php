@@ -3,6 +3,7 @@
 namespace Cyberaxio\GitManager\Tests;
 
 use Cyberaxio\GitManager\Manager;
+use Cyberaxio\GitManager\GitManagerException;
 
 class ManagerTest extends BaseTestCase
 {
@@ -39,7 +40,6 @@ class ManagerTest extends BaseTestCase
 		$this->assertSame($repository, $repository2);
 	}
 
-
 	/**
 	 * @test
 	 */
@@ -48,8 +48,23 @@ class ManagerTest extends BaseTestCase
 		$path = __DIR__ . '/../storage';
 		$url = "https://github.com/Cyberaxio/GitManager.git";
 		$this->assertFalse(file_exists($path . '/test/.git'));
-		$repository = Manager::clone($url, $path . '/test');
+		$repository = Manager::clone($url, $path . '/test', '.');
 		$this->assertTrue(file_exists($path . '/test/.git'));
+	}
+
+	/**
+	 * @test
+	 */
+	public function it_fail_cloning_if_existing()
+	{
+		$path = __DIR__ . '/../storage';
+		$url = "https://github.com/Cyberaxio/GitManager.git";
+
+		$this->expectException(GitManagerException::class);
+		$this->expectExceptionMessage("Target directory is not empty at path " . realpath($path) . '/test' . '/.');
+
+		$repository = Manager::clone($url, $path . '/test', '.');
+		$repository2 = Manager::clone($url, $path . '/test', '.');
 	}
 
 	/**
