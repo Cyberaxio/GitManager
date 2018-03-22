@@ -13,8 +13,7 @@ class WorkingCopyCommands
 		}
 
 		foreach ($file as $item) {
-			$this->command('git rm ' . $item . ($keep == true ? ' --cached ' : null) . ' -rf')
-			->run();
+			$this->command('git rm ' . $item . ($keep == true ? ' --cached ' : null) . ' -rf')->run();
 		}
 
 		return $this;
@@ -27,8 +26,7 @@ class WorkingCopyCommands
 		}
 
 		foreach ($file as $item) {
-			$this->command('git add', $item)
-			->run();
+			$this->command('git add', $item)->run();
 		}
 
 		return $this;
@@ -36,8 +34,7 @@ class WorkingCopyCommands
 
 	public function addAll()
 	{
-		$this->command('git add --all')
-			->run();
+		$this->command('git add --all')->run();
 
 		return $this;
 	}
@@ -49,8 +46,7 @@ class WorkingCopyCommands
 		}
 
 		foreach ($file as $from => $to) {
-			$this->command('git mv', $from, $to)
-			->run();
+			$this->command('git mv', $from, $to)->run();
 		}
 
 		return $this;
@@ -61,17 +57,14 @@ class WorkingCopyCommands
 		if ( ! is_array($options)) {
 			$options = [];
 		}
-		$process = $this->command('git commit', $options, ['-m' => $message])
-			->run();
+		$process = $this->command('git commit', $options, ['-m' => $message])->run();
 		return $process;
 		return $this;
 	}
 
 	public function isDirty()
 	{
-		$output = $this->command('git status')
-			->run()
-			->getOutput();
+		$output = $this->command('git status')->run()->getOutput();
 
 		return false === (strpos(implode('', $output), 'nothing to commit'));
 	}

@@ -10,8 +10,7 @@ class BranchCommands
 
 	public function all($parse = true)
 	{
-		$result = $this->command('git branch -a')
-			->run();
+		$result = $this->command('git branch -a')->run();
 
 		if ($parse) {
 			return $result->parseOutput(function ($value) {
@@ -24,8 +23,7 @@ class BranchCommands
 
 	public function local()
 	{
-		return $this->command('git branch')
-			->run()
+		return $this->command('git branch')->run()
 			->parseOutput(function ($value) {
 				return trim(substr($value, 1));
 			});
@@ -52,8 +50,7 @@ class BranchCommands
 		if ($create && $this->exists($name)) {
 			throw new GitManagerException("Branch [$name] already exists. Aborting.");
 		}
-		$this->command('git checkout', ($create ? '-b' : null), $name)
-			->run();
+		$this->command('git checkout', ($create ? '-b' : null), $name)->run();
 
 		return $this;
 	}
@@ -63,8 +60,7 @@ class BranchCommands
 		if ($this->exists($name)) {
 			throw new GitManagerException("Branch [$name] already exists. Aborting.");
 		}
-		$this->command('git branch', $name)
-			->run();
+		$this->command('git branch', $name)->run();
 
 		if ($checkout) {
 			$this->checkout($name);
@@ -86,8 +82,7 @@ class BranchCommands
 		if ( ! $this->exists($name)) {
 			throw new GitManagerException("Branch [$name] does not exists. Aborting.");
 		}
-		$this->command('git branch', ['-d' => $name])
-			->run();
+		$this->command('git branch', ['-d' => $name])->run();
 
 		return $this;
 	}
@@ -105,16 +100,14 @@ class BranchCommands
 		if ( ! $this->exists($name)) {
 			throw new GitManagerException("Branch [$name] does not exists. Aborting.");
 		}
-		$this->command('git merge', $options, $name)
-			->run();
+		$this->command('git merge', $options, $name)->run();
 
 		return $this;
 	}
 
 	public function rename($oldName, $newName = null)
 	{
-		$this->command('git branch -m ', $oldName, $newName)
-			->run();
+		$this->command('git branch -m ', $oldName, $newName)->run();
 
 		return $this;
 	}
