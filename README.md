@@ -1,6 +1,6 @@
-# A simple PHP git wrapper [![Build Status](https://img.shields.io/travis/Cyberaxio/gitwrapper.svg)](https://travis-ci.org/Cyberaxio/gitwrapper)
+# A simple PHP git wrapper [![Build Status](https://travis-ci.org/Cyberaxio/GitManager.svg?branch=master)](https://travis-ci.org/Cyberaxio/GitManager)
 
-[![Latest Stable Version](https://img.shields.io/packagist/v/cyberaxio/gitwrapper.svg?style=flat)](https://packagist.org/packages/cyberaxio/gitwrapper)
+[![Latest Stable Version](https://img.shields.io/packagist/v/cyberaxio/gitmanager.svg?style=flat)](https://packagist.org/packages/cyberaxio/gitmanager)
 
 
 ## Installation
@@ -86,5 +86,95 @@ $repository->setPrivateKey($pathToPrivateKey, $port);
 
 // Now clone it
 $repository->clone();
+```
+
+## Interact with branches
+```php
+<?php
+// You can access branches commands like this
+$repository->branches()->method();
+
+// Or save branches command into variable
+$branches = $repository->branches();
+$branches->method();
+```
+
+* Get branches infos
+
+```php
+ <?php
+// Return array
+// Get all branches (local + remote)
+$branches->all();
+// Get only local branches
+$branches->local();
+// Get current branch
+$branches->current();
+
+// Return boolean
+// Check if branch exists
+$branches->exists('master'); // true
+// or
+$branches->has('master'); // true
+```
+
+### Fluent methods (can be chained)
+* Create and checkout branches
+
+```php
+<?php
+// create a branch with name MyNewBranch in the repo
+$branches->create("MyNewBranch");
+// or
+$branches->add("MyNewBranch");
+
+// Switch on branch MyNewBranch
+$branches->checkout("MyNewBranch");
+// Repo is now on MyNewBranch branch
+
+// You can switch directly on branch after creating it by passing true to create method
+$branches->create($name, true);
+// You can also create a new branch and switch on by passing true to checkout method
+$branches->checkout($name, true);
+
+// Or chaining methods
+$tags->create('v3.0')->checkout('v3.0');
+```
+
+* Rename branches
+
+```php
+ <?php
+// To rename current branch
+$branches->rename($newName);
+
+// To rename any other branch
+$branches->rename($branch, $newName);
+```
+
+* Delete branches
+
+```php
+ <?php
+// To remove a branch
+$branches->remove($name);
+// Or
+$branches->delete($name);
+```
+
+* Merge branches
+
+```php
+ <?php
+// To merge a branch into active branch
+$branches->merge($name);
+
+// To merge a branch into master branch, just chain methods
+$branches->checkout("master")->merge("BranchToMerge");
+
+// Combine all theses methods (Useless example, but this is for purpose only)
+$name="FeatureTwo";
+$branches->create($name)->checkout('master')->merge($name)->remove($name);
+// -> Create FeatureTwo branch, checkout on master, merge FeatureTwo into master and remove FeatureTwo
 
 ```

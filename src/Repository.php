@@ -3,6 +3,8 @@
 namespace Cyberaxio\GitManager;
 
 use Cyberaxio\GitManager\Commands\GitCommand;
+use Cyberaxio\GitManager\Commands\BranchCommands;
+use Cyberaxio\GitManager\Commands\WorkingDirectoryCommands;
 
 class Repository
 {
@@ -174,12 +176,31 @@ class Repository
 
 	public function command(...$command)
 	{
-		return (new GitCommand(...$command))->debug($this->config('debug'));
+		return (new GitCommand(...$command))->setCwd($this->getPath())->debug($this->config('debug'));
 	}
 
 
 	public function rawCommand(...$command)
 	{
 		return $this->command(...$command)->getOutput();
+	}
+
+	public function branches()
+	{
+		return new BranchCommands($this);
+	}
+
+	public function workingDirectory()
+	{
+		return new WorkingDirectoryCommands($this);
+	}
+
+	public function gitConfig($key, $value, $global = null)
+	{
+		// Handle space on value
+		if(stripos($value, ' ') !== false){
+			$value = '"' . ltrim(rtrim($value, '"'), '"') . '"';
+		}
+		return $this->command('git config ' . ($global ? '--global' : null), $key, $value)->run();
 	}
 }
