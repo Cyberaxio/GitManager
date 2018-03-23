@@ -39,7 +39,7 @@ class Repository
 		return $this->exists = file_exists($this->getPath() . '/.git');
 	}
 
-	public function setPath($path): void
+	public function setPath($path)
 	{
 		// Check if path point to .git
 		$path = $this->formatPath($path);
