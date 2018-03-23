@@ -80,7 +80,7 @@ class Repository
 		if(is_array($key)){
 			$this->config = array_merge($this->config, $key);
 		}else{
-			$this->config[$key] = ($value ? $value : $this->config[$key]);
+			$this->config[$key] = ($value ? $value : ($this->config[$key] ?? null));
 		}
 		return $this;
 	}
