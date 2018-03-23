@@ -48,6 +48,7 @@ class Repository
 		if (!$this->config('cloning') && false === ($this->path = realpath($path))) {
 			throw new GitManagerException("Repository '$path' not found.");
 		}
+		return $this;
 	}
 
 	private function formatPath($path)
@@ -139,6 +140,7 @@ class Repository
 		$this->setEnv('GIT_SSH_KEY', $privateKeyPath);
 		$this->setPort($port);
 		$this->setConfig('privateKey', $privateKey);
+		return $this;
 	}
 
 	public function setPort($port = null)
