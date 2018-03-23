@@ -125,7 +125,7 @@ class Repository
 		return $this->name;
 	}
 
-	public function setPrivateKey($privateKey, $port = null, $wrapper = null): void
+	public function setPrivateKey($privateKey, $port = null, $wrapper = null)
 	{
 		if (null === $wrapper) {
 			$wrapper = __DIR__ . '/bin/git-ssh-wrapper.sh';
